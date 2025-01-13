@@ -1,9 +1,8 @@
+use serde_json::{Map, Value};
 use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Display;
 use std::path::Path;
-extern crate swc_common;
-use serde_json::{Map, Value};
 use swc_common::errors::Handler;
 use swc_common::sync::Lrc;
 use swc_common::{errors::ColorConfig, SourceMap};

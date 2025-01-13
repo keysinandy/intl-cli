@@ -73,13 +73,7 @@ pub fn run_extract(
             if let Ok(json_str) = from_reader::<File, Value>(file) {
                 let json_obj = json_str.as_object();
                 if let Some(obj) = json_obj {
-                    obj.keys().for_each(|x| {
-                        if existed_map.contains_key(x) {
-                            println!("key: {} is existed in json", x);
-                        } else {
-                            existed_map.insert(x.to_string(), obj.get(x).unwrap().to_owned());
-                        }
-                    });
+                    existed_map = obj.to_owned();
                 }
             }
         }

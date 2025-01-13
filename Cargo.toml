@@ -1,7 +1,12 @@
 [package]
-name = "cli"
+name = "intl-cli"
 version = "0.1.0"
 edition = "2021"
+keywords = ["cli", "i18n", "translate", "intl"]
+description = "A tool to extract and translate messages from source code."
+license = "MIT"
+authors = ["keysinandy <keysinandy@gmail.com>"]
+
 
 [dependencies]
 clap = { version = "4.0", features = ["derive", "cargo"] }
@@ -12,3 +17,9 @@ swc_ecma_visit = { version = "5.0" }
 swc_ecma_ast = { version = "5.0" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+chrono = "0.4"
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
