@@ -11,6 +11,12 @@ fn get_date(timestamp: i64) -> String {
     let dt: DateTime<Utc> = Utc.timestamp_opt(timestamp, 0).unwrap();
     dt.format("%Y-%m-%d").to_string()
 }
+
+#[derive(Deserialize, Debug)]
+pub struct ResponseError {
+    pub Code: String,
+    pub Message: String,
+}
 #[derive(Deserialize, Debug)]
 pub struct Response {
     pub RequestId: String,
@@ -18,6 +24,7 @@ pub struct Response {
     pub Target: String,
     pub TargetTextList: Vec<String>,
     pub UsedAmount: u32,
+    pub Error: Option<ResponseError>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -117,6 +124,9 @@ pub async fn generate_by_tencent<T: Payload>(
         .await?;
 
     let response = response.json::<RequestResponse>().await?;
+    if let Some(e) = response.Response.Error {
+        panic!("Request Result Error: {}", e.Message);
+    }
     println!(
         "=========== Translate {:?} words, use amount {:?}===========",
         response.Response.TargetTextList.len(),

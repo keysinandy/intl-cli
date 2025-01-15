@@ -25,18 +25,18 @@ impl<T: Payload> Translate<T> {
         }
     }
     fn get_pair_list(&self, excludes: &Map<String, Value>) -> Vec<(String, Value)> {
-        let input_file = File::open(env::current_dir().unwrap().join(self.input.to_string()));
+        let input_path = env::current_dir().unwrap().join(self.input.to_string());
+        let file = File::open(&input_path)
+            .expect(format!("Open input file with path {:?} error", input_path).as_str());
         let mut list = Vec::new();
-        if let Ok(file) = input_file {
-            if let Ok(json_str) = from_reader::<File, Value>(file) {
-                let json_obj = json_str.as_object();
-                if let Some(obj) = json_obj {
-                    obj.iter().for_each(|x| {
-                        if !excludes.contains_key(x.0) {
-                            list.push((x.0.to_owned(), x.1.to_owned()));
-                        }
-                    });
-                }
+        if let Ok(json_str) = from_reader::<File, Value>(file) {
+            let json_obj = json_str.as_object();
+            if let Some(obj) = json_obj {
+                obj.iter().for_each(|x| {
+                    if !excludes.contains_key(x.0) {
+                        list.push((x.0.to_owned(), x.1.to_owned()));
+                    }
+                });
             }
         }
         return list;
@@ -54,7 +54,13 @@ impl<T: Payload> Translate<T> {
                 let obj_str = from_reader::<File, Value>(file).unwrap_or(Value::Object(Map::new()));
                 obj = obj_str.as_object().unwrap().to_owned();
             }
-            Err(_) => {}
+            Err(_) => {
+                println!(
+                    "Warning: Output file path {:?} not found, create it automatically",
+                    output_path
+                )
+                // panic!("Output file path {:?} not found", output_path);
+            }
         }
         let mut excludes = &Map::new();
         if !write_all {

@@ -2,7 +2,6 @@ use crate::intl::extract::extract_text;
 use globset::{Glob, GlobSet, GlobSetBuilder};
 use serde_json::Value;
 use serde_json::{from_reader, to_writer_pretty, Map};
-use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::fs::{self, File};
 use std::path::Path;
@@ -66,18 +65,16 @@ pub fn run_extract(
         .expect("Failed to build excludes glob set");
     let current_dir = env::current_dir().expect("Failed to get current directory");
     let mut existed_map: Map<String, Value> = Map::new();
-
-    if let Some(s) = output.borrow() {
-        let output = Path::new(current_dir.to_str().unwrap()).join(s);
-        if let Ok(file) = File::open(output) {
-            if let Ok(json_str) = from_reader::<File, Value>(file) {
-                let json_obj = json_str.as_object();
-                if let Some(obj) = json_obj {
-                    existed_map = obj.to_owned();
-                }
+    let output_path = Path::new(current_dir.to_str().unwrap()).join(output.clone().unwrap());
+    if let Ok(file) = File::open(output_path) {
+        if let Ok(json_str) = from_reader::<File, Value>(file) {
+            let json_obj = json_str.as_object();
+            if let Some(obj) = json_obj {
+                existed_map = obj.to_owned();
             }
         }
     }
+
     let mut intl_map = IntlInfo {
         info_map: HashMap::new(),
         err_map: HashMap::new(),

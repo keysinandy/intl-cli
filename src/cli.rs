@@ -22,7 +22,7 @@ pub enum Commands {
     Extract {
         #[arg(short, long, help = "Output file path",default_values = ["output.json"])]
         output: Option<String>,
-        #[arg(short, long, help = "Exclude files glob patterns", default_values = ["/node_modules/**"])]
+        #[arg(short, long, help = "Exclude files glob patterns", default_values = ["**/node_modules/**", "**/.git/**"])]
         excludes: Option<Vec<String>>,
         #[arg(short, long, help = "Include files glob patterns", default_values = ["*.{ts,tsx}"])]
         includes: Option<Vec<String>>,
@@ -82,15 +82,8 @@ pub fn run_cli() {
             let input_str = input_dir.to_str().unwrap();
             let output_str = output_dir.to_str().unwrap();
 
-            let payload = TencentPayload::new(
-                // input_str.to_string(),
-                // output_str.to_string(),
-                source.unwrap(),
-                target.unwrap(),
-                project_id.unwrap(),
-                // secret_id,
-                // secret_key,
-            );
+            let payload =
+                TencentPayload::new(source.unwrap(), target.unwrap(), project_id.unwrap());
             let mut translate =
                 Translate::new(input_str.to_string(), output_str.to_string(), payload);
             let _ = translate.from_tencent(secret_id.as_str(), secret_key.as_str(), write_all);
