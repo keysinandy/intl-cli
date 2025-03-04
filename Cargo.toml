@@ -1,6 +1,6 @@
 [package]
 name = "intl-cli"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 keywords = ["cli", "i18n", "translate", "intl"]
 description = "A tool to extract and translate messages from source code."
